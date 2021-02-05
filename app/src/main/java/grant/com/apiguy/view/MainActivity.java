@@ -2,7 +2,6 @@ package grant.com.apiguy.view;
 
 import android.os.Bundle;
 import android.view.View;
-import android.widget.GridLayout;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -12,7 +11,6 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
@@ -33,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(binding.getRoot());
         LinearLayoutManager linearLayout = new LinearLayoutManager(this);
-        setRecyclerLayout(linearLayout);
+        binding.imageList.setLayoutManager(linearLayout);
 
         int intData = getIntent().getIntExtra(Constants.SHIBE_ACTIVITY_PARAM_INT, 1);
         boolean url = getIntent().getBooleanExtra(Constants.SHIBE_ACTIVITY_PARAM_URL, true);
@@ -65,8 +63,7 @@ public class MainActivity extends AppCompatActivity {
         binding.layoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                if(binding.imageList.getLayoutManager().equals())
-                if(binding.imageList.getLayoutManager() instanceof GridLayoutManager){
+                if(binding.imageList.getLayoutManager() instanceof LinearLayoutManager){
                     GridLayoutManager gridLayoutManager = new GridLayoutManager(binding.getRoot().getContext(), 3);
                     binding.imageList.setLayoutManager(gridLayoutManager);
                 }else{
@@ -76,10 +73,5 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-
-    private void setRecyclerLayout(RecyclerView.LayoutManager layoutManager){
-        binding.imageList.setLayoutManager(layoutManager);
-    }
-
 
 }
