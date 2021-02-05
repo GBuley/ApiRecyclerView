@@ -1,29 +1,29 @@
 package grant.com.apiguy.view;
 
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.GridLayout;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatEditText;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
-
-import com.google.android.material.imageview.ShapeableImageView;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
 import grant.com.apiguy.adapter.ShibeAdapter;
 import grant.com.apiguy.databinding.ActivityMainBinding;
+import grant.com.apiguy.utils.Constants;
 import grant.com.apiguy.viewModel.MainViewModel;
 
 public class MainActivity extends AppCompatActivity {
     private MainViewModel viewModel;
-    private ShapeableImageView shibeImage;
     private ActivityMainBinding binding;
-    private Bitmap bitmap = null;
     AppCompatEditText countText;
 
     @Override
@@ -32,19 +32,28 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
 
         setContentView(binding.getRoot());
+        LinearLayoutManager linearLayout = new LinearLayoutManager(this);
+        setRecyclerLayout(linearLayout);
+
+        int intData = getIntent().getIntExtra(Constants.SHIBE_ACTIVITY_PARAM_INT, 1);
+        boolean url = getIntent().getBooleanExtra(Constants.SHIBE_ACTIVITY_PARAM_URL, true);
+        boolean https = getIntent().getBooleanExtra(Constants.SHIBE_ACTIVITY_PARAM_SECURITY_TYPE, true);
+        String imageType = getIntent().getStringExtra(Constants.SHIBE_ACTIVITY_PARAM_IMAGE_TYPE);
+
 
         viewModel = new ViewModelProvider(this).get(MainViewModel.class);
+        viewModel.fetchShibes(intData,imageType,url,https);
         setupViews();
         viewModel.isSuccessful().observe(this, new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean isSuccessful) {
-                Toast.makeText(MainActivity.this, "Call: " + isSuccessful, Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "Success", Toast.LENGTH_SHORT).show();
             }
         });
         viewModel.getShibes().observe(this, new Observer<List<String>>() {
             @Override
             public void onChanged(List<String> urls) {
-                ShibeAdapter shibeAdapter = new ShibeAdapter(urls);
+                ShibeAdapter shibeAdapter = new ShibeAdapter(urls, imageType);
                 binding.imageList.setAdapter(shibeAdapter);
             }
         });
@@ -53,22 +62,24 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupViews() {
-        binding.shibeBtn.setOnClickListener(new View.OnClickListener() {
+        binding.layoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                countText = binding.editTextCount;
-                if (countText.getText().toString().isEmpty()) {
-                    countText.setText("1");
+//                if(binding.imageList.getLayoutManager().equals())
+                if(binding.imageList.getLayoutManager() instanceof GridLayoutManager){
+                    GridLayoutManager gridLayoutManager = new GridLayoutManager(binding.getRoot().getContext(), 3);
+                    binding.imageList.setLayoutManager(gridLayoutManager);
+                }else{
+                    LinearLayoutManager linearLayoutManager = new LinearLayoutManager((binding.getRoot().getContext()));
+                    binding.imageList.setLayoutManager(linearLayoutManager);
                 }
-                int count = Integer.parseInt(countText.getText().toString());
-                if (count < 1) {
-                    count = 1;
-                }
-                viewModel.fetchShibes(count);
             }
         });
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
-        binding.imageList.setLayoutManager(linearLayoutManager);
     }
+
+    private void setRecyclerLayout(RecyclerView.LayoutManager layoutManager){
+        binding.imageList.setLayoutManager(layoutManager);
+    }
+
 
 }

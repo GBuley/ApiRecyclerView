@@ -8,6 +8,9 @@ import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.google.android.material.imageview.ShapeableImageView;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -19,6 +22,7 @@ public class ShibeAdapter extends RecyclerView.Adapter<ShibeAdapter.ShibeViewHol
 
 
     private List<String> urls;
+    private String imageType;
 
     static class ShibeViewHolder extends RecyclerView.ViewHolder{
 
@@ -31,10 +35,24 @@ public class ShibeAdapter extends RecyclerView.Adapter<ShibeAdapter.ShibeViewHol
         public void loadUrl(String url) {
             binding.tvUrl.setText(url);
         }
+        public void loadImages(String url, String imageType){
+            if(!url.contains("http") && imageType.equals("Shibes")) {
+                Glide.with(binding.getRoot()).load("https://cdn.shibe.online/shibes/"+url+".jpg").centerCrop().placeholder(binding.shibeImage.getDrawable()).into(binding.shibeImage);
+            }
+            else if(!url.contains("http") && imageType.equals("Cats")) {
+                Glide.with(binding.getRoot()).load("https://cdn.shibe.online/cats/"+url+".jpg").centerCrop().placeholder(binding.shibeImage.getDrawable()).into(binding.shibeImage);
+            }
+            else if(!url.contains("http") && imageType.equals("Birds")) {
+                Glide.with(binding.getRoot()).load("https://cdn.shibe.online/birds/"+url+".jpg").centerCrop().placeholder(binding.shibeImage.getDrawable()).into(binding.shibeImage);
+            }else{
+                Glide.with(binding.getRoot()).load(url).centerCrop().placeholder(binding.shibeImage.getDrawable()).into(binding.shibeImage);
+            }
+        }
     }
 
-    public ShibeAdapter(List<String> urls){
+    public ShibeAdapter(List<String> urls, String imageType){
         this.urls = urls;
+        this.imageType = imageType;
     }
 
 
@@ -49,6 +67,7 @@ public class ShibeAdapter extends RecyclerView.Adapter<ShibeAdapter.ShibeViewHol
     public void onBindViewHolder(@NonNull ShibeViewHolder holder, int position) {
         String url = urls.get(position);
         holder.loadUrl(url);
+        holder.loadImages(url, imageType);
     }
 
     @Override

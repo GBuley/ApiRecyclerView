@@ -28,21 +28,55 @@ public class MainViewModel extends ViewModel {
         return shibeData;
     }
 
-    public void fetchShibes(int count){
-        ShibeRepository.getInstance().getShibes(count).enqueue(new Callback<List<String>>() {
-            @Override
-            public void onResponse(@NotNull Call<List<String>> call,@NotNull Response<List<String>> response) {
-                _isSuccessful.setValue(response.body().size() == count);
-                res= response.body();
-                shibeData.setValue(res);
-            }
+    public void fetchShibes(int count, String imageType, boolean urls, boolean https){
+        if(imageType.equals("Shibes")) {
+            ShibeRepository.getInstance().getShibes(count, urls, https).enqueue(new Callback<List<String>>() {
+                @Override
+                public void onResponse(@NotNull Call<List<String>> call, @NotNull Response<List<String>> response) {
+                    _isSuccessful.setValue(response.body().size() == count);
+                    res = response.body();
+                    shibeData.setValue(res);
+                }
 
-            @Override
-            public void onFailure(Call<List<String>> call, Throwable t) {
-                _isSuccessful.setValue(false);
-                res.add("Call failed");
-                shibeData.setValue(res);
-            }
-        });
+                @Override
+                public void onFailure(Call<List<String>> call, Throwable t) {
+                    _isSuccessful.setValue(false);
+                    res.add("Call failed");
+                    shibeData.setValue(res);
+                }
+            });
+        }else if(imageType.equals("Birds")) {
+            ShibeRepository.getInstance().getBirds(count, urls, https).enqueue(new Callback<List<String>>() {
+                @Override
+                public void onResponse(@NotNull Call<List<String>> call, @NotNull Response<List<String>> response) {
+                    _isSuccessful.setValue(response.body().size() == count);
+                    res = response.body();
+                    shibeData.setValue(res);
+                }
+
+                @Override
+                public void onFailure(Call<List<String>> call, Throwable t) {
+                    _isSuccessful.setValue(false);
+                    res.add("Call failed");
+                    shibeData.setValue(res);
+                }
+            });
+        }else if(imageType.equals("Cats")) {
+            ShibeRepository.getInstance().getCats(count, urls, https).enqueue(new Callback<List<String>>() {
+                @Override
+                public void onResponse(@NotNull Call<List<String>> call, @NotNull Response<List<String>> response) {
+                    _isSuccessful.setValue(response.body().size() == count);
+                    res = response.body();
+                    shibeData.setValue(res);
+                }
+
+                @Override
+                public void onFailure(Call<List<String>> call, Throwable t) {
+                    _isSuccessful.setValue(false);
+                    res.add("Call failed");
+                    shibeData.setValue(res);
+                }
+            });
+        }
     }
 }

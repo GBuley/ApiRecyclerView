@@ -15,9 +15,17 @@ public class ShibeRepository {
 
     }
 
-    public Call<List<String>> getShibes(int count){
+    public Call<List<String>> getShibes(int count, boolean urls, boolean https){
         ShibeService shibeService = RetrofitInstance.getInstance();
-        return shibeService.getShibes(count);
+        return shibeService.getShibes(count, urls, https);
+    }
+    public Call<List<String>> getBirds(int count, boolean urls, boolean https){
+        ShibeService shibeService = RetrofitInstance.getInstance();
+        return shibeService.getBirds(count, urls, https);
+    }
+    public Call<List<String>> getCats(int count, boolean urls, boolean https){
+        ShibeService shibeService = RetrofitInstance.getInstance();
+        return shibeService.getCats(count, urls, https);
     }
 
     public static ShibeRepository getInstance(){
